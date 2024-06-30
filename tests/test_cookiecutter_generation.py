@@ -45,18 +45,11 @@ def context():
 SUPPORTED_COMBINATIONS = [
     {"username_type": "username"},
     {"username_type": "email"},
-    {"open_source_license": "MIT"},
-    {"open_source_license": "BSD"},
-    {"open_source_license": "GPLv3"},
-    {"open_source_license": "Apache Software License 2.0"},
-    {"open_source_license": "Not open source"},
     {"windows": "y"},
     {"windows": "n"},
     {"editor": "None"},
     {"editor": "PyCharm"},
     {"editor": "VS Code"},
-    {"use_docker": "y"},
-    {"use_docker": "n"},
     {"postgresql_version": "16"},
     {"postgresql_version": "15"},
     {"postgresql_version": "14"},
@@ -68,65 +61,27 @@ SUPPORTED_COMBINATIONS = [
     {"cloud_provider": "GCP", "use_whitenoise": "n"},
     {"cloud_provider": "Azure", "use_whitenoise": "y"},
     {"cloud_provider": "Azure", "use_whitenoise": "n"},
-    {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Mailgun"},
-    {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Mailjet"},
-    {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Mandrill"},
-    {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Postmark"},
     {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Sendgrid"},
-    {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Brevo"},
-    {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "SparkPost"},
     {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Other SMTP"},
     # Note: cloud_provider=None AND use_whitenoise=n is not supported
-    {"cloud_provider": "AWS", "mail_service": "Mailgun"},
     {"cloud_provider": "AWS", "mail_service": "Amazon SES"},
-    {"cloud_provider": "AWS", "mail_service": "Mailjet"},
-    {"cloud_provider": "AWS", "mail_service": "Mandrill"},
-    {"cloud_provider": "AWS", "mail_service": "Postmark"},
     {"cloud_provider": "AWS", "mail_service": "Sendgrid"},
-    {"cloud_provider": "AWS", "mail_service": "Brevo"},
-    {"cloud_provider": "AWS", "mail_service": "SparkPost"},
     {"cloud_provider": "AWS", "mail_service": "Other SMTP"},
-    {"cloud_provider": "GCP", "mail_service": "Mailgun"},
-    {"cloud_provider": "GCP", "mail_service": "Mailjet"},
-    {"cloud_provider": "GCP", "mail_service": "Mandrill"},
-    {"cloud_provider": "GCP", "mail_service": "Postmark"},
     {"cloud_provider": "GCP", "mail_service": "Sendgrid"},
-    {"cloud_provider": "GCP", "mail_service": "Brevo"},
-    {"cloud_provider": "GCP", "mail_service": "SparkPost"},
     {"cloud_provider": "GCP", "mail_service": "Other SMTP"},
-    {"cloud_provider": "Azure", "mail_service": "Mailgun"},
-    {"cloud_provider": "Azure", "mail_service": "Mailjet"},
-    {"cloud_provider": "Azure", "mail_service": "Mandrill"},
-    {"cloud_provider": "Azure", "mail_service": "Postmark"},
     {"cloud_provider": "Azure", "mail_service": "Sendgrid"},
-    {"cloud_provider": "Azure", "mail_service": "Brevo"},
-    {"cloud_provider": "Azure", "mail_service": "SparkPost"},
     {"cloud_provider": "Azure", "mail_service": "Other SMTP"},
     # Note: cloud_providers GCP, Azure, and None
     # with mail_service Amazon SES is not supported
-    {"use_async": "y"},
-    {"use_async": "n"},
     {"use_drf": "y"},
     {"use_drf": "n"},
-    {"frontend_pipeline": "None"},
-    {"frontend_pipeline": "Django Compressor"},
-    {"frontend_pipeline": "Gulp"},
-    {"frontend_pipeline": "Webpack"},
     {"use_celery": "y"},
     {"use_celery": "n"},
-    {"use_mailpit": "y"},
-    {"use_mailpit": "n"},
-    {"use_sentry": "y"},
-    {"use_sentry": "n"},
     {"use_whitenoise": "y"},
     {"use_whitenoise": "n"},
-    {"use_heroku": "y"},
-    {"use_heroku": "n"},
     {"ci_tool": "None"},
-    {"ci_tool": "Travis"},
     {"ci_tool": "Gitlab"},
     {"ci_tool": "Github"},
-    {"ci_tool": "Drone"},
     {"keep_local_envs_in_vcs": "y"},
     {"keep_local_envs_in_vcs": "n"},
     {"debug": "y"},
@@ -271,39 +226,20 @@ def test_djlint_check_passes(cookies, context_override):
 
 
 @pytest.mark.parametrize(
-    ["use_docker", "expected_test_script"],
     [
         ("n", "pytest"),
         ("y", "docker compose -f docker-compose.local.yml run django pytest"),
     ],
 )
-def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_script):
-    context.update({"ci_tool": "Travis", "use_docker": use_docker})
-    result = cookies.bake(extra_context=context)
-
-    assert result.exit_code == 0
-    assert result.exception is None
-    assert result.project_path.name == context["project_slug"]
-    assert result.project_path.is_dir()
-
-    with open(f"{result.project_path}/.travis.yml") as travis_yml:
-        try:
-            yml = yaml.safe_load(travis_yml)["jobs"]["include"]
-            assert yml[0]["script"] == ["ruff check ."]
-            assert yml[1]["script"] == [expected_test_script]
-        except yaml.YAMLError as e:
-            pytest.fail(str(e))
-
 
 @pytest.mark.parametrize(
-    ["use_docker", "expected_test_script"],
     [
         ("n", "pytest"),
         ("y", "docker compose -f docker-compose.local.yml run django pytest"),
     ],
 )
-def test_gitlab_invokes_precommit_and_pytest(cookies, context, use_docker, expected_test_script):
-    context.update({"ci_tool": "Gitlab", "use_docker": use_docker})
+def test_gitlab_invokes_precommit_and_pytest(cookies, context, expected_test_script):
+    context.update({"ci_tool": "Gitlab"})
     result = cookies.bake(extra_context=context)
 
     assert result.exit_code == 0
@@ -323,14 +259,13 @@ def test_gitlab_invokes_precommit_and_pytest(cookies, context, use_docker, expec
 
 
 @pytest.mark.parametrize(
-    ["use_docker", "expected_test_script"],
     [
         ("n", "pytest"),
         ("y", "docker compose -f docker-compose.local.yml run django pytest"),
     ],
 )
-def test_github_invokes_linter_and_pytest(cookies, context, use_docker, expected_test_script):
-    context.update({"ci_tool": "Github", "use_docker": use_docker})
+def test_github_invokes_linter_and_pytest(cookies, context, expected_test_script):
+    context.update({"ci_tool": "Github"})
     result = cookies.bake(extra_context=context)
 
     assert result.exit_code == 0
@@ -398,7 +333,6 @@ def test_trim_domain_email(cookies, context):
     """Check that leading and trailing spaces are trimmed in domain and email."""
     context.update(
         {
-            "use_docker": "y",
             "domain_name": "   example.com   ",
             "email": "  me@example.com  ",
         }

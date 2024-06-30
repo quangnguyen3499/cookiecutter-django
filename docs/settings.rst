@@ -55,24 +55,10 @@ SENTRY_DSN                              SENTRY_DSN                  n/a         
 SENTRY_ENVIRONMENT                      n/a                         n/a                                            production
 SENTRY_TRACES_SAMPLE_RATE               n/a                         n/a                                            0.0
 DJANGO_SENTRY_LOG_LEVEL                 SENTRY_LOG_LEVEL            n/a                                            logging.INFO
-MAILGUN_API_KEY                         MAILGUN_API_KEY             n/a                                            raises error
-MAILGUN_DOMAIN                          MAILGUN_SENDER_DOMAIN       n/a                                            raises error
-MAILGUN_API_URL                         n/a                         n/a                                            "https://api.mailgun.net/v3"
-MAILJET_API_KEY                         MAILJET_API_KEY             n/a                                            raises error
-MAILJET_SECRET_KEY                      MAILJET_SECRET_KEY          n/a                                            raises error
-MAILJET_API_URL                         n/a                         n/a                                            "https://api.mailjet.com/v3"
-MANDRILL_API_KEY                        MANDRILL_API_KEY            n/a                                            raises error
-MANDRILL_API_URL                        n/a                         n/a                                            "https://mandrillapp.com/api/1.0"
-POSTMARK_SERVER_TOKEN                   POSTMARK_SERVER_TOKEN       n/a                                            raises error
-POSTMARK_API_URL                        n/a                         n/a                                            "https://api.postmarkapp.com/"
 SENDGRID_API_KEY                        SENDGRID_API_KEY            n/a                                            raises error
 SENDGRID_GENERATE_MESSAGE_ID            True                        n/a                                            raises error
 SENDGRID_MERGE_FIELD_FORMAT             None                        n/a                                            raises error
 SENDGRID_API_URL                        n/a                         n/a                                            "https://api.sendgrid.com/v3/"
-BREVO_API_KEY                           BREVO_API_KEY               n/a                                            raises error
-BREVO_API_URL                           n/a                         n/a                                            "https://api.brevo.com/v3/"
-SPARKPOST_API_KEY                       SPARKPOST_API_KEY           n/a                                            raises error
-SPARKPOST_API_URL                       n/a                         n/a                                            "https://api.sparkpost.com/api/v1"
 ======================================= =========================== ============================================== ======================================================================
 
 --------------------------

@@ -38,15 +38,6 @@ domain_name:
 version:
     The version of the project at its inception.
 
-open_source_license:
-    A software license for the project. The choices are:
-
-    1. MIT_
-    2. BSD_
-    3. GPLv3_
-    4. `Apache Software License 2.0`_
-    5. Not open source
-
 timezone:
     The value to be used for the ``TIME_ZONE`` setting of the project.
 
@@ -59,9 +50,6 @@ editor:
     1. None
     2. PyCharm_
     3. `VS Code`_
-
-use_docker:
-    Indicates whether the project should be configured to use Docker_, `Docker Compose`_ and `devcontainer`_.
 
 postgresql_version:
     Select a PostgreSQL_ version to use. The choices are:
@@ -85,62 +73,32 @@ cloud_provider:
 mail_service:
     Select an email service that Django-Anymail provides
 
-    1. Mailgun_
-    2. `Amazon SES`_
-    3. Mailjet_
-    4. Mandrill_
-    5. Postmark_
-    6. SendGrid_
-    7. `Brevo (formerly SendinBlue)`_
-    8. SparkPost_
-    9. `Other SMTP`_
-
-use_async:
-    Indicates whether the project should use web sockets with Uvicorn + Gunicorn.
+    1. `Amazon SES`_
+    2. SendGrid_
+    3. `Other SMTP`_
 
 use_drf:
     Indicates whether the project should be configured to use `Django Rest Framework`_.
 
-frontend_pipeline:
-    Select a pipeline to compile and optimise frontend assets (JS, CSS, ...):
-
-    1. None
-    2. `Django Compressor`_
-    3. `Gulp`_
-    4. `Webpack`_
-
-Both Gulp and Webpack support Bootstrap recompilation with real-time variables alteration.
-
 use_celery:
     Indicates whether the project should be configured to use Celery_.
-
-use_mailpit:
-    Indicates whether the project should be configured to use Mailpit_.
-
-use_sentry:
-    Indicates whether the project should be configured to use Sentry_.
 
 use_whitenoise:
     Indicates whether the project should be configured to use WhiteNoise_.
 
-use_heroku:
-    Indicates whether the project should be configured so as to be deployable
-    to Heroku_.
-
 ci_tool:
     Select a CI tool for running tests. The choices are:
 
-    1. None
-    2. `Travis CI`_
+    1. `Github Actions`_
+    2. `Bitbucket`_
     3. `Gitlab CI`_
-    4. `Github Actions`_
-    5. `Drone CI`_
+    4. None
 
 keep_local_envs_in_vcs:
     Indicates whether the project's ``.envs/.local/`` should be kept in VCS
     (comes in handy when working in teams where local environment reproducibility
     is strongly encouraged).
-    Note: .env(s) are only utilized when Docker Compose and/or Heroku support is enabled.
+    Note: .env(s) are only utilized when Docker Compose support is enabled.
 
 debug:
     Indicates whether the project should be configured for debugging.
@@ -169,13 +127,7 @@ debug:
 .. _Azure: https://azure.microsoft.com/en-us/products/storage/blobs/
 
 .. _Amazon SES: https://aws.amazon.com/ses/
-.. _Mailgun: https://www.mailgun.com
-.. _Mailjet: https://www.mailjet.com
-.. _Mandrill: http://mandrill.com
-.. _Postmark: https://postmarkapp.com
 .. _SendGrid: https://sendgrid.com
-.. _Brevo (formerly SendinBlue): https://www.brevo.com
-.. _SparkPost: https://www.sparkpost.com
 .. _Other SMTP: https://anymail.readthedocs.io/en/stable/
 
 .. _Django Rest Framework: https://github.com/encode/django-rest-framework/
@@ -190,12 +142,6 @@ debug:
 
 .. _WhiteNoise: https://github.com/evansd/whitenoise
 
-.. _Heroku: https://github.com/heroku/heroku-buildpack-python
-
-.. _Travis CI: https://travis-ci.org/
-
 .. _GitLab CI: https://docs.gitlab.com/ee/ci/
-
-.. _Drone CI: https://docs.drone.io/pipeline/overview/
 
 .. _Github Actions: https://docs.github.com/en/actions

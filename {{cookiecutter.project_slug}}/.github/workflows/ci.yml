@@ -29,44 +29,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      {%- if cookiecutter.open_source_license != 'Not open source' %}
-      # Consider using pre-commit.ci for open source project
-      {%- endif %}
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
 
   # With no caching at all the entire ci process takes 3m to complete!
   pytest:
     runs-on: ubuntu-latest
-    {%- if cookiecutter.use_docker == 'n' %}
-
-    services:
-      {%- if cookiecutter.use_celery == 'y' %}
-      redis:
-        image: redis:6
-        ports:
-          - 6379:6379
-      {%- endif %}
-      postgres:
-        image: postgres:{{ cookiecutter.postgresql_version }}
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_PASSWORD: postgres
-
-    env:
-      {%- if cookiecutter.use_celery == 'y' %}
-      CELERY_BROKER_URL: 'redis://localhost:6379/0'
-      {%- endif %}
-      # postgres://user:password@host:port/database
-      DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
-    {%- endif %}
 
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
-      {%- if cookiecutter.use_docker == 'y' %}
 
       - name: Build the Stack
         run: docker compose -f docker-compose.local.yml build django
@@ -82,7 +54,6 @@ jobs:
 
       - name: Tear down the Stack
         run: docker compose -f docker-compose.local.yml down
-      {%- else %}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -100,4 +71,3 @@ jobs:
 
       - name: Test with pytest
         run: pytest
-      {%- endif %}

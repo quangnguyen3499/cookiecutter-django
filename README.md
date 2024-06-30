@@ -33,7 +33,6 @@ production-ready Django projects quickly.
 - Send emails via [Anymail](https://github.com/anymail/django-anymail) (using [Mailgun](http://www.mailgun.com/) by default or Amazon SES if AWS is selected cloud provider, but switchable)
 - Media storage using Amazon S3, Google Cloud Storage, Azure Storage or nginx
 - Docker support using [docker-compose](https://github.com/docker/compose) for development and production (using [Traefik](https://traefik.io/) with [LetsEncrypt](https://letsencrypt.org/) support)
-- [Procfile](https://devcenter.heroku.com/articles/procfile) for deploying to Heroku
 - Instructions for deploying to [PythonAnywhere](https://www.pythonanywhere.com/)
 - Run tests with unittest or pytest
 - Customizable PostgreSQL version
@@ -109,12 +108,6 @@ Answer the prompts with your own desired [options](http://cookiecutter-django.re
     domain_name [example.com]: myreddit.com
     email [daniel-greenfeld@example.com]: pydanny@gmail.com
     version [0.1.0]: 0.0.1
-    Select open_source_license:
-    1 - MIT
-    2 - BSD
-    3 - GPLv3
-    4 - Apache Software License 2.0
-    5 - Not open source
     Choose from 1, 2, 3, 4, 5 [1]: 1
     Select username_type:
     1 - username
@@ -123,11 +116,10 @@ Answer the prompts with your own desired [options](http://cookiecutter-django.re
     timezone [UTC]: America/Los_Angeles
     windows [n]: n
     Select an editor to use. The choices are:
-    1 - None
+    1 - VSCode
     2 - PyCharm
-    3 - VS Code
+    3 - None
     Choose from 1, 2, 3 [1]: 1
-    use_docker [n]: n
     Select postgresql_version:
     1 - 16
     2 - 15
@@ -141,34 +133,19 @@ Answer the prompts with your own desired [options](http://cookiecutter-django.re
     3 - None
     Choose from 1, 2, 3 [1]: 1
     Select mail_service:
-    1 - Mailgun
-    2 - Amazon SES
-    3 - Mailjet
-    4 - Mandrill
-    5 - Postmark
-    6 - Sendgrid
-    7 - Brevo (formerly SendinBlue)
-    8 - SparkPost
-    9 - Other SMTP
+    1 - Amazon SES
+    2 - Sendgrid
+    3 - Other SMTP
     Choose from 1, 2, 3, 4, 5, 6, 7, 8, 9 [1]: 1
-    use_async [n]: n
     use_drf [n]: y
-    Select frontend_pipeline:
-    1 - None
-    2 - Django Compressor
-    3 - Gulp
-    4 - Webpack
     Choose from 1, 2, 3, 4 [1]: 1
     use_celery [n]: y
-    use_mailpit [n]: n
-    use_sentry [n]: y
     use_whitenoise [n]: n
-    use_heroku [n]: y
     Select ci_tool:
-    1 - None
-    2 - Travis
+    1 - Github
+    2 - Bitbucket
     3 - Gitlab
-    4 - Github
+    4 - None
     Choose from 1, 2, 3, 4 [1]: 4
     keep_local_envs_in_vcs [y]: y
     debug [n]: n

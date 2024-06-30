@@ -34,12 +34,6 @@ SUCCESS = "\x1b[1;32m [SUCCESS]: "
 DEBUG_VALUE = "debug"
 
 
-def remove_open_source_files():
-    file_names = ["CONTRIBUTORS.txt", "LICENSE"]
-    for file_name in file_names:
-        os.remove(file_name)
-
-
 def remove_gplv3_files():
     file_names = ["COPYING"]
     for file_name in file_names:
@@ -95,24 +89,8 @@ def remove_utility_files():
     shutil.rmtree("utility")
 
 
-def remove_heroku_files():
-    file_names = ["Procfile", "runtime.txt", "requirements.txt"]
-    for file_name in file_names:
-        if file_name == "requirements.txt" and "{{ cookiecutter.ci_tool }}".lower() == "travis":
-            # don't remove the file if we are using travisci but not using heroku
-            continue
-        os.remove(file_name)
-    shutil.rmtree("bin")
-
-
 def remove_sass_files():
     shutil.rmtree(os.path.join("{{cookiecutter.project_slug}}", "static", "sass"))
-
-
-def remove_gulp_files():
-    file_names = ["gulpfile.js"]
-    for file_name in file_names:
-        os.remove(file_name)
 
 
 def remove_webpack_files():
@@ -153,7 +131,7 @@ def update_package_json(remove_dev_deps=None, remove_keys=None, scripts=None):
         fd.write("\n")
 
 
-def handle_js_runner(choice, use_docker, use_async):
+def handle_js_runner(choice):
     if choice == "Gulp":
         update_package_json(
             remove_dev_deps=[
@@ -196,21 +174,16 @@ def handle_js_runner(choice, use_docker, use_async):
             "gulp-sass",
             "gulp-uglify-es",
         ]
-        if not use_docker:
-            dev_django_cmd = (
-                "uvicorn config.asgi:application --reload" if use_async else "python manage.py runserver_plus"
-            )
-            scripts.update(
-                {
-                    "dev": "concurrently npm:dev:*",
-                    "dev:webpack": "webpack serve --config webpack/dev.config.js",
-                    "dev:django": dev_django_cmd,
-                }
-            )
-        else:
-            remove_dev_deps.append("concurrently")
-        update_package_json(remove_dev_deps=remove_dev_deps, scripts=scripts)
-        remove_gulp_files()
+        dev_django_cmd = (
+            "python manage.py runserver_plus"
+        )
+        scripts.update(
+            {
+                "dev": "concurrently npm:dev:*",
+                "dev:webpack": "webpack serve --config webpack/dev.config.js",
+                "dev:django": dev_django_cmd,
+            }
+        )
 
 
 def remove_prettier_pre_commit():
@@ -241,29 +214,12 @@ def remove_celery_files():
         os.remove(file_name)
 
 
-def remove_async_files():
-    file_names = [
-        os.path.join("config", "asgi.py"),
-        os.path.join("config", "websocket.py"),
-    ]
-    for file_name in file_names:
-        os.remove(file_name)
-
-
-def remove_dottravisyml_file():
-    os.remove(".travis.yml")
-
-
 def remove_dotgitlabciyml_file():
     os.remove(".gitlab-ci.yml")
 
 
 def remove_dotgithub_folder():
     shutil.rmtree(".github")
-
-
-def remove_dotdrone_file():
-    os.remove(".drone.yml")
 
 
 def generate_random_string(length, using_digits=False, using_ascii_letters=False, using_punctuation=False):
@@ -444,70 +400,16 @@ def main():
     )
     set_flags_in_settings_files()
 
-    if "{{ cookiecutter.open_source_license }}" == "Not open source":
-        remove_open_source_files()
-    if "{{ cookiecutter.open_source_license}}" != "GPLv3":
-        remove_gplv3_files()
-
     if "{{ cookiecutter.username_type }}" == "username":
         remove_custom_user_manager_files()
 
     if "{{ cookiecutter.editor }}" != "PyCharm":
         remove_pycharm_files()
 
-    if "{{ cookiecutter.use_docker }}".lower() == "y":
-        remove_utility_files()
-    else:
-        remove_docker_files()
-
-    if "{{ cookiecutter.use_docker }}".lower() == "y" and "{{ cookiecutter.cloud_provider}}" != "AWS":
-        remove_aws_dockerfile()
-
-    if "{{ cookiecutter.use_heroku }}".lower() == "n":
-        remove_heroku_files()
-
-    if "{{ cookiecutter.use_docker }}".lower() == "n" and "{{ cookiecutter.use_heroku }}".lower() == "n":
-        if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
-            print(
-                INFO + ".env(s) are only utilized when Docker Compose and/or "
-                "Heroku support is enabled so keeping them does not make sense "
-                "given your current setup." + TERMINATOR
-            )
-        remove_envs_and_associated_files()
-    else:
-        append_to_gitignore_file(".env")
-        append_to_gitignore_file(".envs/*")
-        if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
-            append_to_gitignore_file("!.envs/.local/")
-
-    if "{{ cookiecutter.frontend_pipeline }}" in ["None", "Django Compressor"]:
-        remove_gulp_files()
-        remove_webpack_files()
-        remove_sass_files()
-        remove_packagejson_file()
-        remove_prettier_pre_commit()
-        if "{{ cookiecutter.use_docker }}".lower() == "y":
-            remove_node_dockerfile()
-    else:
-        handle_js_runner(
-            "{{ cookiecutter.frontend_pipeline }}",
-            use_docker=("{{ cookiecutter.use_docker }}".lower() == "y"),
-            use_async=("{{ cookiecutter.use_async }}".lower() == "y"),
-        )
-
-    if "{{ cookiecutter.cloud_provider }}" == "None" and "{{ cookiecutter.use_docker }}".lower() == "n":
-        print(
-            WARNING + "You chose to not use any cloud providers nor Docker, "
-            "media files won't be served in production." + TERMINATOR
-        )
+    remove_utility_files()
 
     if "{{ cookiecutter.use_celery }}".lower() == "n":
         remove_celery_files()
-        if "{{ cookiecutter.use_docker }}".lower() == "y":
-            remove_celery_compose_dirs()
-
-    if "{{ cookiecutter.ci_tool }}" != "Travis":
-        remove_dottravisyml_file()
 
     if "{{ cookiecutter.ci_tool }}" != "Gitlab":
         remove_dotgitlabciyml_file()
@@ -515,14 +417,8 @@ def main():
     if "{{ cookiecutter.ci_tool }}" != "Github":
         remove_dotgithub_folder()
 
-    if "{{ cookiecutter.ci_tool }}" != "Drone":
-        remove_dotdrone_file()
-
     if "{{ cookiecutter.use_drf }}".lower() == "n":
         remove_drf_starter_files()
-
-    if "{{ cookiecutter.use_async }}".lower() == "n":
-        remove_async_files()
 
     print(SUCCESS + "Project initialized, keep up the good work!" + TERMINATOR)
 

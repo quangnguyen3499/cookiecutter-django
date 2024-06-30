@@ -45,16 +45,7 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-{% if cookiecutter.use_docker == "y" -%}
 DATABASES = {"default": env.db("DATABASE_URL")}
-{%- else %}
-DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default="postgres://{% if cookiecutter.windows == 'y' %}localhost{% endif %}/{{cookiecutter.project_slug}}",
-    ),
-}
-{%- endif %}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -94,9 +85,6 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
-{%- endif %}
-{%- if cookiecutter.frontend_pipeline == 'Webpack' %}
-    "webpack_loader",
 {%- endif %}
 ]
 
@@ -342,13 +330,6 @@ ACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.UserSignup
 SOCIALACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.UserSocialSignupForm"}
-{% if cookiecutter.frontend_pipeline == 'Django Compressor' -%}
-# django-compressor
-# ------------------------------------------------------------------------------
-# https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
-INSTALLED_APPS += ["compressor"]
-STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
-{%- endif %}
 {% if cookiecutter.use_drf == "y" -%}
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -374,19 +355,6 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
 }
-{%- endif %}
-{%- if cookiecutter.frontend_pipeline == 'Webpack' %}
-# django-webpack-loader
-# ------------------------------------------------------------------------------
-WEBPACK_LOADER = {
-    "DEFAULT": {
-        "CACHE": not DEBUG,
-        "STATS_FILE": BASE_DIR / "webpack-stats.json",
-        "POLL_INTERVAL": 0.1,
-        "IGNORE": [r".+\.hot-update.js", r".+\.map"],
-    },
-}
-
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------

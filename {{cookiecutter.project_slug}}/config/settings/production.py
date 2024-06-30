@@ -1,18 +1,4 @@
 # ruff: noqa: E501
-{% if cookiecutter.use_sentry == 'y' -%}
-import logging
-
-import sentry_sdk
-
-{%- if cookiecutter.use_celery == 'y' %}
-from sentry_sdk.integrations.celery import CeleryIntegration
-
-{%- endif %}
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
-
-{% endif -%}
 from .base import *  # noqa: F403
 from .base import DATABASES
 from .base import INSTALLED_APPS
@@ -240,39 +226,10 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 INSTALLED_APPS += ["anymail"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 # https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
-{%- if cookiecutter.mail_service == 'Mailgun' %}
-# https://anymail.readthedocs.io/en/stable/esps/mailgun/
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-ANYMAIL = {
-    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN"),
-    "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
-}
-{%- elif cookiecutter.mail_service == 'Amazon SES' %}
+{%- if cookiecutter.mail_service == 'Amazon SES' %}
 # https://anymail.readthedocs.io/en/stable/esps/amazon_ses/
 EMAIL_BACKEND = "anymail.backends.amazon_ses.EmailBackend"
 ANYMAIL = {}
-{%- elif cookiecutter.mail_service == 'Mailjet' %}
-# https://anymail.readthedocs.io/en/stable/esps/mailjet/
-EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
-ANYMAIL = {
-    "MAILJET_API_KEY": env("MAILJET_API_KEY"),
-    "MAILJET_SECRET_KEY": env("MAILJET_SECRET_KEY"),
-}
-{%- elif cookiecutter.mail_service == 'Mandrill' %}
-# https://anymail.readthedocs.io/en/stable/esps/mandrill/
-EMAIL_BACKEND = "anymail.backends.mandrill.EmailBackend"
-ANYMAIL = {
-    "MANDRILL_API_KEY": env("MANDRILL_API_KEY"),
-    "MANDRILL_API_URL": env("MANDRILL_API_URL", default="https://mandrillapp.com/api/1.0"),
-}
-{%- elif cookiecutter.mail_service == 'Postmark' %}
-# https://anymail.readthedocs.io/en/stable/esps/postmark/
-EMAIL_BACKEND = "anymail.backends.postmark.EmailBackend"
-ANYMAIL = {
-    "POSTMARK_SERVER_TOKEN": env("POSTMARK_SERVER_TOKEN"),
-    "POSTMARK_API_URL": env("POSTMARK_API_URL", default="https://api.postmarkapp.com/"),
-}
 {%- elif cookiecutter.mail_service == 'Sendgrid' %}
 # https://anymail.readthedocs.io/en/stable/esps/sendgrid/
 EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
@@ -280,27 +237,12 @@ ANYMAIL = {
     "SENDGRID_API_KEY": env("SENDGRID_API_KEY"),
     "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
 }
-{%- elif cookiecutter.mail_service == 'Brevo' %}
-# https://anymail.readthedocs.io/en/stable/esps/brevo/
-EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
-ANYMAIL = {
-    "BREVO_API_KEY": env("BREVO_API_KEY"),
-    "BREVO_API_URL": env("BREVO_API_URL", default="https://api.brevo.com/v3/"),
-}
-{%- elif cookiecutter.mail_service == 'SparkPost' %}
-# https://anymail.readthedocs.io/en/stable/esps/sparkpost/
-EMAIL_BACKEND = "anymail.backends.sparkpost.EmailBackend"
-ANYMAIL = {
-    "SPARKPOST_API_KEY": env("SPARKPOST_API_KEY"),
-    "SPARKPOST_API_URL": env("SPARKPOST_API_URL", default="https://api.sparkpost.com/api/v1"),
-}
 {%- elif cookiecutter.mail_service == 'Other SMTP' %}
 # https://anymail.readthedocs.io/en/stable/esps
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 ANYMAIL = {}
 {%- endif %}
 
-{% if cookiecutter.frontend_pipeline == 'Django Compressor' -%}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_ENABLED
@@ -327,7 +269,6 @@ COMPRESS_FILTERS = {
     ],
     "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
-{% endif %}
 {%- if cookiecutter.use_whitenoise == 'n' -%}
 # Collectfast
 # ------------------------------------------------------------------------------
@@ -339,106 +280,6 @@ INSTALLED_APPS = ["collectfast", *INSTALLED_APPS]
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-{% if cookiecutter.use_sentry == 'n' -%}
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s",
-        },
-    },
-    "handlers": {
-        "mail_admins": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "django.utils.log.AdminEmailHandler",
-        },
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
-    },
-    "root": {"level": "INFO", "handlers": ["console"]},
-    "loggers": {
-        "django.request": {
-            "handlers": ["mail_admins"],
-            "level": "ERROR",
-            "propagate": True,
-        },
-        "django.security.DisallowedHost": {
-            "level": "ERROR",
-            "handlers": ["console", "mail_admins"],
-            "propagate": True,
-        },
-    },
-}
-{% else %}
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": True,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
-    },
-    "root": {"level": "INFO", "handlers": ["console"]},
-    "loggers": {
-        "django.db.backends": {
-            "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-        # Errors logged by the SDK itself
-        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-        "django.security.DisallowedHost": {
-            "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-    },
-}
-
-# Sentry
-# ------------------------------------------------------------------------------
-SENTRY_DSN = env("SENTRY_DSN")
-SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
-
-sentry_logging = LoggingIntegration(
-    level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
-    event_level=logging.ERROR,  # Send errors as events
-)
-
-{%- if cookiecutter.use_celery == 'y' %}
-integrations = [
-    sentry_logging,
-    DjangoIntegration(),
-    CeleryIntegration(),
-    RedisIntegration(),
-]
-{% else %}
-integrations = [sentry_logging, DjangoIntegration(), RedisIntegration()]
-{% endif -%}
-
-sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    integrations=integrations,
-    environment=env("SENTRY_ENVIRONMENT", default="production"),
-    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
-)
-{% endif %}
 {% if cookiecutter.use_drf == "y" -%}
 
 # django-rest-framework

@@ -9,11 +9,7 @@ module.exports = merge(commonConfig, {
     proxy: [
       {
         context: ['/'],
-        {%- if cookiecutter.use_docker == 'n' %}
-        target: 'http://0.0.0.0:8000',
-        {%- else %}
         target: 'http://django:8000',
-        {%- endif %}
       },
     ],
     client: {

@@ -15,9 +15,6 @@ services:
       {%- if cookiecutter.use_celery == 'y' %}
       - redis
       {%- endif %}
-      {%- if cookiecutter.use_mailpit == 'y' %}
-      - mailpit
-      {%- endif %}
     volumes:
       - .:/app:z
     env_file:
@@ -39,15 +36,6 @@ services:
     env_file:
       - ./.envs/.local/.postgres
 
-  {%- if cookiecutter.use_mailpit == 'y' %}
-
-  mailpit:
-    image: docker.io/axllent/mailpit:latest
-    container_name: {{ cookiecutter.project_slug }}_local_mailpit
-    ports:
-      - "8025:8025"
-
-  {%- endif %}
   {%- if cookiecutter.use_celery == 'y' %}
 
   redis:
@@ -65,9 +53,6 @@ services:
     depends_on:
       - redis
       - postgres
-      {%- if cookiecutter.use_mailpit == 'y' %}
-      - mailpit
-      {%- endif %}
     ports: []
     command: /start-celeryworker
 
@@ -78,9 +63,6 @@ services:
     depends_on:
       - redis
       - postgres
-      {%- if cookiecutter.use_mailpit == 'y' %}
-      - mailpit
-      {%- endif %}
     ports: []
     command: /start-celerybeat
 
@@ -91,28 +73,5 @@ services:
     ports:
       - '5555:5555'
     command: /start-flower
-
-  {%- endif %}
-  {%- if cookiecutter.frontend_pipeline in ['Gulp', 'Webpack'] %}
-
-  node:
-    build:
-      context: .
-      dockerfile: ./compose/local/node/Dockerfile
-    image: {{ cookiecutter.project_slug }}_local_node
-    container_name: {{ cookiecutter.project_slug }}_local_node
-    depends_on:
-      - django
-    volumes:
-      - .:/app:z
-      # http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
-      - /app/node_modules
-    command: npm run dev
-    ports:
-      - '3000:3000'
-      {%- if cookiecutter.frontend_pipeline == 'Gulp' %}
-      # Expose browsersync UI: https://www.browsersync.io/docs/options/#option-ui
-      - '3001:3001'
-      {%- endif %}
 
   {%- endif %}

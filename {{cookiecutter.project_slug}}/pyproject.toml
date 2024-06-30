@@ -6,9 +6,6 @@ python_files = [
     "tests.py",
     "test_*.py",
 ]
-{%- if cookiecutter.frontend_pipeline == 'Gulp' %}
-norecursedirs = ["node_modules"]
-{%- endif %}
 
 # ==== Coverage ====
 [tool.coverage.run]
@@ -101,7 +98,6 @@ select = [
   "UP",
   "YTT",
   # "ANN", # flake8-annotations: we should support this in the future but 100+ errors atm
-  "ASYNC",
   "S",
   "BLE",
   "FBT",
@@ -151,15 +147,15 @@ ignore = [
   "S101", # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
   "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
   "SIM102", # sometimes it's better to nest
-  "UP038" # Checks for uses of isinstance/issubclass that take a tuple 
+  "UP038" # Checks for uses of isinstance/issubclass that take a tuple
           # of types for comparison.
-          # Deactivated because it can make the code slow: 
+          # Deactivated because it can make the code slow:
           # https://github.com/astral-sh/ruff/issues/7871
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
 unfixable = []
-# The fixes in extend-unsafe-fixes will require 
+# The fixes in extend-unsafe-fixes will require
 # provide the `--unsafe-fixes` flag when fixing.
 extend-unsafe-fixes = [
     "UP038"

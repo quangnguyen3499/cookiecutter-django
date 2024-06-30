@@ -198,17 +198,6 @@ The ``container_name`` from the yml file can be used to check on containers with
 
 Notice that the ``container_name`` is generated dynamically using your project slug as a prefix
 
-Mailpit
-~~~~~~~
-
-When developing locally you can go with Mailpit_ for email testing provided ``use_mailpit`` was set to ``y`` on setup. To proceed,
-
-#. make sure ``<project_slug>_local_mailpit`` container is up and running;
-
-#. open up ``http://127.0.0.1:8025``.
-
-.. _Mailpit: https://github.com/axllent/mailpit/
-
 .. _`CeleryTasks`:
 
 Celery tasks in local development
@@ -228,7 +217,6 @@ Celery Flower
 
 Prerequisites:
 
-* ``use_docker`` was set to ``y`` on project initialization;
 * ``use_celery`` was set to ``y`` on project initialization.
 
 By default, it's enabled both in local and production environments (``docker-compose.local.yml`` and ``docker-compose.production.yml`` Docker Compose configs, respectively) through a ``flower`` service. For added security, ``flower`` requires its clients to provide authentication credentials specified as the corresponding environments' ``.envs/.local/.django`` and ``.envs/.production/.django`` ``CELERY_FLOWER_USER`` and ``CELERY_FLOWER_PASSWORD`` environment variables. Check out ``localhost:5555`` and see for yourself.

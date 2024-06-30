@@ -26,7 +26,6 @@ precommit:
 
 pytest:
   stage: test
-  {%- if cookiecutter.use_docker == 'y' %}
   image: docker:25.0
   services:
     - docker:dind
@@ -38,14 +37,3 @@ pytest:
     - docker compose -f docker-compose.local.yml up -d
   script:
     - docker compose -f docker-compose.local.yml run django pytest
-  {%- else %}
-  image: python:3.12
-  services:
-    - postgres:{{ cookiecutter.postgresql_version }}
-  variables:
-    DATABASE_URL: pgsql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres/$POSTGRES_DB
-  before_script:
-    - pip install -r requirements/local.txt
-  script:
-    - pytest
-  {%- endif %}
