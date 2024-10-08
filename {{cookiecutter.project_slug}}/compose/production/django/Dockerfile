@@ -21,7 +21,7 @@ ENV DJANGO_AZURE_ACCOUNT_NAME=${DJANGO_AZURE_ACCOUNT_NAME}
 RUN npm run build
 
 # define an alias for the specific python version used in this file.
-FROM docker.io/python:3.12.7-slim-bookworm AS python
+FROM docker.io/python:3.13.0-slim-bookworm AS python
 
 # Python build stage
 FROM python AS python-build-stage
