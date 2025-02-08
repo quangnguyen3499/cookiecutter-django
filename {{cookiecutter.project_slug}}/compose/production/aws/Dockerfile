@@ -1,4 +1,4 @@
-FROM docker.io/amazon/aws-cli:2.23.15
+FROM docker.io/amazon/aws-cli:2.24.0
 
 COPY ./compose/production/aws/maintenance /usr/local/bin/maintenance
 COPY ./compose/production/postgres/maintenance/_sourced /usr/local/bin/maintenance/_sourced
