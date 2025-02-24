@@ -1,5 +1,5 @@
 cookiecutter==2.6.0
-sh==2.2.1; sys_platform != "win32"
+sh==2.2.2; sys_platform != "win32"
 binaryornot==0.4.4
 
 # Code quality
