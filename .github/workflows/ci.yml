@@ -22,7 +22,7 @@ jobs:
     name: "pytest ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -49,7 +49,7 @@ jobs:
       COMPOSE_DOCKER_CLI_BUILD: 1
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -89,7 +89,7 @@ jobs:
       DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
