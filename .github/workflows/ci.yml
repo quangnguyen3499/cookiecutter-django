@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       redis:
-        image: redis:8.0
+        image: redis:8.2
         ports:
           - 6379:6379
       postgres:
